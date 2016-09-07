@@ -1,0 +1,11 @@
+name: SpigotLobby
+version: 1.0
+main: me.raulsmail.spigotlobby.SpigotLobby
+author: raulsmail
+description: A Plugin For Lobby Servers.
+commands:
+  fly:
+    description: It let you fly all around the server.
+  spigotLobby:
+    aliases: [sl]
+    description: Is the main command of SpigotLobby.

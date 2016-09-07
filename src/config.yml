@@ -1,0 +1,40 @@
+events:
+  setMotd: true
+  join:
+    sendPlayerChat: true
+    sendGlobalChat: true
+    sendTitle: true
+    sendSubTitle: true
+    sendActionBar: true
+    sendTabHeaderAndFooter: true
+    optionsItem:
+      enabled: true
+      slot: 8
+      id: 404
+      durability: 0
+      name: '&9Options §6- §eRight click'
+  quit:
+    sendGlobalChat: true
+  cancelEvents:
+    foodChange: true
+    damagePlayer: true
+    breakBlock: true
+    placeBlock: true
+    pickupItem: true
+    dropItem: true
+    interact: true
+    weatherChange: true
+permissions:
+  admin: true
+  events:
+    breakBlock: true
+    placeBlock: true
+    pickupItem: true
+    dropItem: true
+    interact: true
+  commands:
+    fly: true
+    spigotlobby: true
+menus:
+  optionsMenu:
+    title: '&9Options'

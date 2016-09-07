@@ -1,0 +1,20 @@
+general:
+  noPermissions: "&cYou don't have permissions!"
+  notNumber: "&c%number% is not a number!"
+events:
+  motd: "&aThis server is powered%newLine%&bwith SpigotLobby"
+  join:
+    playerChat: "&3Welcome to the server!"
+    globalChat: "&b%player% &dhas joined the server!"
+    title: "&6Welcome &c%player%"
+    subTitle: "&5to my Server!"
+    actionBar: "&kI'm rare"
+    tabHeader: "&aWelcome, &e%player%&a!"
+    tabFooter: "&bI'm a footer!"
+  quit:
+    globalChat: "&b%player% &dhas left the server!"
+commands:
+  notPlayer: "&cYou must be a player to use this command!"
+  fly:
+    enable: "&aFlying has been enabled!"
+    disable: "&cFlying has been disabled!"
