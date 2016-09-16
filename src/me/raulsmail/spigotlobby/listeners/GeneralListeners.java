@@ -24,7 +24,10 @@ public class GeneralListeners implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
-        new LobbyPlayer(event.getPlayer());
+
+        LobbyPlayer lobbyPlayer = new LobbyPlayer(event.getPlayer());
+        event.getPlayer().sendMessage(lobbyPlayer.getTest());
+
         if (SpigotLobby.getPlugin().getConfig().getBoolean("events.join.sendPlayerChat")) {
             event.getPlayer().sendMessage(SpigotLobby.getPlugin().getMessages().getString("events.join.playerChat").replaceAll("&", "§").replaceAll("%player%", event.getPlayer().getName()));
         }

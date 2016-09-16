@@ -8,6 +8,7 @@ import me.raulsmail.spigotlobby.listeners.GeneralListeners;
 import me.raulsmail.spigotlobby.listeners.OptionsListeners;
 import me.raulsmail.spigotlobby.nms.NMSHandler;
 import me.raulsmail.spigotlobby.nms.versions.*;
+import me.raulsmail.spigotlobby.storage.MySQL;
 import me.raulsmail.spigotlobby.utils.CommonUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 
 /**
  * Created by raulsmail.
@@ -53,6 +55,13 @@ public class SpigotLobby extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (commonUtilities.storage instanceof MySQL) {
+            try {
+                ((MySQL) commonUtilities.storage).closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         getServer().getScheduler().cancelTasks(plugin);
     }
 

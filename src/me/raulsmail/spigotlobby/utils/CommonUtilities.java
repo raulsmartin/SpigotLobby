@@ -2,6 +2,8 @@ package me.raulsmail.spigotlobby.utils;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
 import me.raulsmail.spigotlobby.menus.Menus;
+import me.raulsmail.spigotlobby.storage.LocalFile;
+import me.raulsmail.spigotlobby.storage.MySQL;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -19,6 +21,21 @@ public class CommonUtilities extends CommonVariables {
         menus = new Menus();
         optionsMaterial = getMaterial("events.join.optionsItem.id");
         players = new HashMap<>();
+        if (SpigotLobby.getPlugin().getConfig().getBoolean("mysql.enabled")) {
+            String hostname = SpigotLobby.getPlugin().getConfig().getString("mysql.hostname", "localhost");
+            Integer port = SpigotLobby.getPlugin().getConfig().getInt("mysql.port", 3306);
+            String database = SpigotLobby.getPlugin().getConfig().getString("mysql.database", "betterclans");
+            String username = SpigotLobby.getPlugin().getConfig().getString("mysql.username", "root");
+            String password = SpigotLobby.getPlugin().getConfig().getString("mysql.password", "root");
+            if (!hostname.equals("") && !database.equals("") && !username.equals("") && !password.equals("")) {
+                if (port.toString().equals("")) {
+                    port = 3306;
+                }
+            }
+            new MySQL(hostname, port.toString(), database, username, password);
+        } else {
+            storage = new LocalFile();
+        }
         for (Player player : SpigotLobby.getPlugin().getServer().getOnlinePlayers()) {
             new LobbyPlayer(player);
         }

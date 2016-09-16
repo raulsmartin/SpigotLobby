@@ -38,3 +38,10 @@ permissions:
 menus:
   optionsMenu:
     title: '&9Options'
+mysql:
+  enabled: false
+  hostname: 'localhost'
+  port: 3306
+  database: 'spigotlobby'
+  username: 'root'
+  password: 'root'

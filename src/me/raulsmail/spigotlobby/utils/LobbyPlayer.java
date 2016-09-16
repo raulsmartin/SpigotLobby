@@ -8,13 +8,23 @@ import org.bukkit.entity.Player;
  */
 public class LobbyPlayer {
     private Player player;
+    private String test;
 
     public LobbyPlayer(Player player) {
         this.player = player;
         SpigotLobby.getPlugin().getCommonUtilities().addLobbyPlayer(this);
+        SpigotLobby.getPlugin().getCommonUtilities().storage.createPlayerInfo(this);
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
     }
 }
