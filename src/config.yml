@@ -12,7 +12,7 @@ events:
       slot: 8
       id: 404
       durability: 0
-      name: '&9Options §6- §eRight click'
+      name: '&9Options &6− &eRight click'
   quit:
     sendGlobalChat: true
   cancelEvents:
