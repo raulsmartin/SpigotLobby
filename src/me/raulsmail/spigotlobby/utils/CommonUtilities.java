@@ -81,6 +81,7 @@ public class CommonUtilities extends CommonVariables {
             page = 1;
         }
         player.sendMessage("§e----------- §6[§9SpigotLobby Help§6]§e -----------");
+        player.sendMessage("");
         switch (page) {
             case 1:
                 player.sendMessage("   §e/fly                  §6- §9Toggles Fly Mode");
