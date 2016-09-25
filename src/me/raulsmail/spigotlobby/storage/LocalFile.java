@@ -28,7 +28,10 @@ public class LocalFile implements Storage {
             try {
                 if (playerFileLoc.createNewFile()) {
                     data = YamlConfiguration.loadConfiguration(playerFileLoc);
-                    data.set("test", "Hi!");
+                    data.set("chatEnabled", true);
+                    data.set("playersEnabled", true);
+                    data.set("petsEnabled", true);
+                    data.set("alertsEnabled", true);
                     data.save(playerFileLoc);
                 } else {
                     return false;
@@ -43,7 +46,10 @@ public class LocalFile implements Storage {
             data = YamlConfiguration.loadConfiguration(playerFileLoc);
         }
 
-        player.setTest(data.getString("test"));
+        player.setChatEnabled(data.getBoolean("chatEnabled"));
+        player.setPlayersEnabled(data.getBoolean("playersEnabled"));
+        player.setPetsEnabled(data.getBoolean("petsEnabled"));
+        player.setAlertsEnabled(data.getBoolean("alertsEnabled"));
         configurations.put(player, data);
         return true;
     }
@@ -51,5 +57,25 @@ public class LocalFile implements Storage {
     @Override
     public Boolean existsPlayerInfo(LobbyPlayer player) {
         return new File(location, player.getPlayer().getUniqueId().toString() + ".yml").exists();
+    }
+
+    @Override
+    public Boolean savePlayerInfo(LobbyPlayer player) {
+        if (configurations.containsKey(player) && existsPlayerInfo(player)) {
+            FileConfiguration data = configurations.get(player);
+            if (data != null) {
+                try {
+                    data.set("chatEnabled", player.hasChatEnabled());
+                    data.set("playersEnabled", player.hasPlayersEnabled());
+                    data.set("petsEnabled", player.hasPetsEnabled());
+                    data.set("alertsEnabled", player.hasAlertsEnabled());
+                    data.save(new File(location, player.getPlayer().getUniqueId().toString() + ".yml"));
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
     }
 }

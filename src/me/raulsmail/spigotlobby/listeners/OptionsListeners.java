@@ -15,7 +15,10 @@ public class OptionsListeners implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             if (event.getItem() != null && event.getItem().getType() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
-                if (event.getItem().getType().equals(SpigotLobby.getPlugin().getCommonUtilities().optionsMaterial)) {
+                if (event.getItem().getType().equals(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial())) {
+                    SpigotLobby.getPlugin().getCommonUtilities().getMenus().getCosmeticsMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(event.getPlayer()));
+                    event.setCancelled(true);
+                } else if (event.getItem().getType().equals(SpigotLobby.getPlugin().getCommonUtilities().getOptionsMaterial())) {
                     SpigotLobby.getPlugin().getCommonUtilities().getMenus().getOptionsMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(event.getPlayer()));
                     event.setCancelled(true);
                 }

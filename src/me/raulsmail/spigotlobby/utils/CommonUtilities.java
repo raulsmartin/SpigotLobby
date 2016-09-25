@@ -4,6 +4,7 @@ import me.raulsmail.spigotlobby.SpigotLobby;
 import me.raulsmail.spigotlobby.menus.Menus;
 import me.raulsmail.spigotlobby.storage.LocalFile;
 import me.raulsmail.spigotlobby.storage.MySQL;
+import me.raulsmail.spigotlobby.storage.Storage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -19,12 +20,14 @@ public class CommonUtilities extends CommonVariables {
 
     public void setupCommonVariables() {
         menus = new Menus();
+        cosmeticsMaterial = getMaterial("events.join.cosmeticsItem.id");
         optionsMaterial = getMaterial("events.join.optionsItem.id");
         players = new HashMap<>();
+        oldVersion = SpigotLobby.getPlugin().getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].contains("v1_8_R");
         if (SpigotLobby.getPlugin().getConfig().getBoolean("mysql.enabled")) {
             String hostname = SpigotLobby.getPlugin().getConfig().getString("mysql.hostname", "localhost");
             Integer port = SpigotLobby.getPlugin().getConfig().getInt("mysql.port", 3306);
-            String database = SpigotLobby.getPlugin().getConfig().getString("mysql.database", "betterclans");
+            String database = SpigotLobby.getPlugin().getConfig().getString("mysql.database", "spigotlobby");
             String username = SpigotLobby.getPlugin().getConfig().getString("mysql.username", "root");
             String password = SpigotLobby.getPlugin().getConfig().getString("mysql.password", "root");
             if (!hostname.equals("") && !database.equals("") && !username.equals("") && !password.equals("")) {
@@ -41,8 +44,28 @@ public class CommonUtilities extends CommonVariables {
         }
     }
 
+    public Material getCosmeticsMaterial() {
+        return cosmeticsMaterial;
+    }
+
+    public Material getOptionsMaterial() {
+        return optionsMaterial;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
     public Menus getMenus() {
         return menus;
+    }
+
+    public Boolean isOldVersion() {
+        return oldVersion;
     }
 
     public LobbyPlayer getLobbyPlayer(Player player) {
@@ -80,17 +103,18 @@ public class CommonUtilities extends CommonVariables {
         if (page <= 0) {
             page = 1;
         }
-        player.sendMessage("§e----------- §6[§9SpigotLobby Help§6]§e -----------");
+        player.sendMessage("§e------------ §6[§9SpigotLobby Help§6]§e ------------");
         player.sendMessage("");
         switch (page) {
             case 1:
-                player.sendMessage("   §e/fly                  §6- §9Toggles Fly Mode");
-                player.sendMessage("   §e/sl help [number] §6- §9Show That Help Page");
+                player.sendMessage("   §e/fly §6- §9Toggles Fly Mode");
+                player.sendMessage("   §e/sl menu [name] §6- §9Show The Specified Menu");
+                player.sendMessage("   §e/sl help [page] §6- §9Show The Help Page");
                 break;
         }
         player.sendMessage("");
         player.sendMessage("   §9Page: §e" + page + "§6/§e1");
-        player.sendMessage("§e---------------------------------------");
+        player.sendMessage("§e-----------------------------------------");
     }
 
     public Integer getInteger(Player player, String number) {
@@ -111,11 +135,16 @@ public class CommonUtilities extends CommonVariables {
     }
 
     public void givePlayerJoinOptionsItem(Player player) {
-        ItemStack item = new ItemStack(optionsMaterial, 1, (short) SpigotLobby.getPlugin().getConfig().getInt("events.join.optionsItem.durability"));
+        givePlayerItemFormConfig(player, cosmeticsMaterial, "cosmeticsItem");
+        givePlayerItemFormConfig(player, optionsMaterial, "optionsItem");
+    }
+
+    private void givePlayerItemFormConfig(Player player, Material material, String itemConfig) {
+        ItemStack item = new ItemStack(material, 1, (short) SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".durability"));
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(SpigotLobby.getPlugin().getConfig().getString("events.join.optionsItem.name").replaceAll("&", "§"));
+        itemMeta.setDisplayName(SpigotLobby.getPlugin().getConfig().getString("events.join." + itemConfig + ".name").replaceAll("&", "§"));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
-        player.getInventory().setItem(SpigotLobby.getPlugin().getConfig().getInt("events.join.optionsItem.slot"), item);
+        player.getInventory().setItem(SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".slot"), item);
     }
 }

@@ -11,8 +11,10 @@ import java.util.Map;
  * Created by raulsmail.
  */
 class CommonVariables {
-    public Material optionsMaterial;
-    public Storage storage;
+    Material cosmeticsMaterial, optionsMaterial;
+    Storage storage;
     Map<Player, LobbyPlayer> players;
     Menus menus;
+    Boolean oldVersion;
+
 }

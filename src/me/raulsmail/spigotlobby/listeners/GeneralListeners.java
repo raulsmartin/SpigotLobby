@@ -5,9 +5,13 @@ import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by raulsmail.
@@ -24,10 +28,17 @@ public class GeneralListeners implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
-
         LobbyPlayer lobbyPlayer = new LobbyPlayer(event.getPlayer());
-        event.getPlayer().sendMessage(lobbyPlayer.getTest());
-
+        for (Player player : SpigotLobby.getPlugin().getServer().getOnlinePlayers()) {
+            if (!event.getPlayer().getUniqueId().equals(player.getUniqueId())) {
+                if (!lobbyPlayer.hasPlayersEnabled()) {
+                    event.getPlayer().hidePlayer(player);
+                }
+                if (!SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player).hasPlayersEnabled()) {
+                    player.hidePlayer(event.getPlayer());
+                }
+            }
+        }
         if (SpigotLobby.getPlugin().getConfig().getBoolean("events.join.sendPlayerChat")) {
             event.getPlayer().sendMessage(SpigotLobby.getPlugin().getMessages().getString("events.join.playerChat").replaceAll("&", "§").replaceAll("%player%", event.getPlayer().getName()));
         }
@@ -58,6 +69,8 @@ public class GeneralListeners implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
+        LobbyPlayer lobbyPlayer = SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(event.getPlayer());
+        SpigotLobby.getPlugin().getCommonUtilities().getStorage().savePlayerInfo(lobbyPlayer);
         SpigotLobby.getPlugin().getCommonUtilities().removeLobbyPlayer(event.getPlayer());
         if (SpigotLobby.getPlugin().getConfig().getBoolean("events.quit.sendGlobalChat")) {
             for (Player player : SpigotLobby.getPlugin().getServer().getOnlinePlayers()) {
@@ -65,6 +78,27 @@ public class GeneralListeners implements Listener {
                     player.sendMessage(SpigotLobby.getPlugin().getMessages().getString("events.quit.globalChat").replaceAll("&", "§").replaceAll("%player%", event.getPlayer().getName()));
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+        if (!SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(event.getPlayer()).hasChatEnabled()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(SpigotLobby.getPlugin().getMessages().getString("events.chat.disabledChat").replaceAll("&", "§"));
+        }
+        if (!event.isCancelled()) {
+            List<Player> cancelledPlayers = new ArrayList<>();
+            for (Player player : event.getRecipients()) {
+                LobbyPlayer lobbyPlayer = SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player);
+                if (!lobbyPlayer.hasChatEnabled()) {
+                    cancelledPlayers.add(player);
+                }
+                if (!event.getPlayer().getUniqueId().equals(player.getUniqueId()) && event.getMessage().toLowerCase().contains(player.getName().toLowerCase()) && lobbyPlayer.hasAlertsEnabled()) {
+                    lobbyPlayer.alertPlayer();
+                }
+            }
+            event.getRecipients().removeAll(cancelledPlayers);
         }
     }
 }

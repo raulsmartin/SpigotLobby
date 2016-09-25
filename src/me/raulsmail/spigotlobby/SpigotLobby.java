@@ -12,6 +12,7 @@ import me.raulsmail.spigotlobby.storage.MySQL;
 import me.raulsmail.spigotlobby.utils.CommonUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class SpigotLobby extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        if (setupActionbar()) {
+        if (setupNMSHandler()) {
             commonUtilities = new CommonUtilities();
             saveDefaultConfigs();
             getServer().getPluginManager().registerEvents(new CancelListeners(), plugin);
@@ -55,9 +56,12 @@ public class SpigotLobby extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (commonUtilities.storage instanceof MySQL) {
+        for (Player player : getServer().getOnlinePlayers()) {
+            commonUtilities.getStorage().savePlayerInfo(commonUtilities.getLobbyPlayer(player));
+        }
+        if (commonUtilities.getStorage() instanceof MySQL) {
             try {
-                ((MySQL) commonUtilities.storage).closeConnection();
+                ((MySQL) commonUtilities.getStorage()).closeConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -90,7 +94,7 @@ public class SpigotLobby extends JavaPlugin {
         return commonUtilities;
     }
 
-    private boolean setupActionbar() {
+    private boolean setupNMSHandler() {
         try {
             String version = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
             getLogger().info("Your server is running version " + version);

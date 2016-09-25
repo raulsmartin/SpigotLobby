@@ -10,4 +10,6 @@ public interface Storage {
     Boolean createPlayerInfo(LobbyPlayer player);
 
     Boolean existsPlayerInfo(LobbyPlayer player);
+
+    Boolean savePlayerInfo(LobbyPlayer player);
 }

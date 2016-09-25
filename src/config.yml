@@ -7,12 +7,18 @@ events:
     sendSubTitle: true
     sendActionBar: true
     sendTabHeaderAndFooter: true
+    cosmeticsItem:
+      enabled: true
+      slot: 4
+      id: 130
+      durability: 0
+      name: '&9Cosmetics &6- &eRight click'
     optionsItem:
       enabled: true
       slot: 8
       id: 404
       durability: 0
-      name: '&9Options &6− &eRight click'
+      name: '&9Options &6- &eRight click'
   quit:
     sendGlobalChat: true
   cancelEvents:
@@ -36,6 +42,8 @@ permissions:
     fly: true
     spigotlobby: true
 menus:
+  cosmeticsMenu:
+    title: '&9Cosmetics'
   optionsMenu:
     title: '&9Options'
 mysql:

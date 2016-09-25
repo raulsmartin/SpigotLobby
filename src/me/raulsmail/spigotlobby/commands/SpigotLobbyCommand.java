@@ -30,6 +30,21 @@ public class SpigotLobbyCommand implements CommandExecutor {
                                 }
                             }
                             SpigotLobby.getPlugin().getCommonUtilities().showHelp(player, page);
+                        } else if (option.equalsIgnoreCase("menu")) {
+                            if (args.length > 1) {
+                                String type = args[1].toLowerCase();
+                                if (!type.isEmpty()) {
+                                    switch (type) {
+                                        case "cosmetics":
+                                            SpigotLobby.getPlugin().getCommonUtilities().getMenus().getCosmeticsMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player));
+                                            return false;
+                                        case "options":
+                                            SpigotLobby.getPlugin().getCommonUtilities().getMenus().getOptionsMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player));
+                                            return false;
+                                    }
+                                }
+                            }
+                            player.sendMessage(SpigotLobby.getPlugin().getMessages().getString("commands.specifyMenuType").replaceAll("&", "§"));
                         }
                     }
                 }

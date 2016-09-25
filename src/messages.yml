@@ -13,8 +13,11 @@ events:
     tabFooter: "&bI'm a footer!"
   quit:
     globalChat: "&b%player% &dhas left the server!"
+  chat:
+    disabledChat: "&cYou have the chat disabled!"
 commands:
   notPlayer: "&cYou must be a player to use this command!"
+  specifyMenuType: "&cYou must specify a valid menu type!"
   fly:
     enable: "&aFlying has been enabled!"
     disable: "&cFlying has been disabled!"

@@ -24,16 +24,16 @@ public class MySQL implements Storage {
 
         try {
             Statement statement = openConnection().createStatement();
-            if (statement.executeUpdate("CREATE TABLE IF NOT EXISTS `spigotlobby` ( `id` INT NOT NULL AUTO_INCREMENT, `uuid` VARCHAR(36) NOT NULL, `test` VARCHAR(16) NOT NULL, PRIMARY KEY (`id`), UNIQUE (`id`), UNIQUE (`uuid`));") != 0) {
+            if (statement.executeUpdate("CREATE TABLE IF NOT EXISTS `spigotlobby` ( `id` INT NOT NULL AUTO_INCREMENT, `uuid` VARCHAR(36) NOT NULL, `chatEnabled` TINYINT(1) NOT NULL, `playersEnabled` TINYINT(1) NOT NULL, `petsEnabled` TINYINT(1) NOT NULL, `alertsEnabled` TINYINT(1) NOT NULL, PRIMARY KEY (`id`), UNIQUE (`id`), UNIQUE (`uuid`));") != 0) {
                 SpigotLobby.getPlugin().getLogger().severe("Error creating the MySQL table!");
-                SpigotLobby.getPlugin().getCommonUtilities().storage = new LocalFile();
+                SpigotLobby.getPlugin().getCommonUtilities().setStorage(new LocalFile());
             } else {
-                SpigotLobby.getPlugin().getCommonUtilities().storage = this;
+                SpigotLobby.getPlugin().getCommonUtilities().setStorage(this);
             }
             statement.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            SpigotLobby.getPlugin().getCommonUtilities().storage = new LocalFile();
+            SpigotLobby.getPlugin().getCommonUtilities().setStorage(new LocalFile());
         }
     }
 
@@ -42,7 +42,7 @@ public class MySQL implements Storage {
         if (!existsPlayerInfo(player)) {
             try {
                 Statement statement = openConnection().createStatement();
-                if (statement.executeUpdate("INSERT INTO `spigotlobby` (`uuid`, `test`) VALUES ('" + player.getPlayer().getUniqueId().toString() + "', 'Hi!');") != 1) {
+                if (statement.executeUpdate("INSERT INTO `spigotlobby` (`uuid`, `chatEnabled`, `playersEnabled`, `petsEnabled`, `alertsEnabled`) VALUES ('" + player.getPlayer().getUniqueId().toString() + "', 1, 1, 1, 1);") != 1) {
                     SpigotLobby.getPlugin().getLogger().severe("Error creating the " + player.getPlayer().getName() + "'s information to the MySQL table!");
                     return false;
                 }
@@ -54,7 +54,18 @@ public class MySQL implements Storage {
         }
         HashMap<String, Object> res = getPlayerInfo(player);
         if (res != null && !res.isEmpty()) {
-            player.setTest(res.get("test").toString());
+            if (res.get("chatEnabled") instanceof Boolean) {
+                player.setChatEnabled((Boolean) res.get("chatEnabled"));
+            }
+            if (res.get("playersEnabled") instanceof Boolean) {
+                player.setPlayersEnabled((Boolean) res.get("playersEnabled"));
+            }
+            if (res.get("petsEnabled") instanceof Boolean) {
+                player.setPetsEnabled((Boolean) res.get("petsEnabled"));
+            }
+            if (res.get("alertsEnabled") instanceof Boolean) {
+                player.setAlertsEnabled((Boolean) res.get("alertsEnabled"));
+            }
             return true;
         }
         return false;
@@ -64,19 +75,22 @@ public class MySQL implements Storage {
     public Boolean existsPlayerInfo(LobbyPlayer player) {
         HashMap<String, Object> res = getPlayerInfo(player);
         return res != null && !res.isEmpty();
-        /*Boolean doReturn = false;
+    }
+
+    @Override
+    public Boolean savePlayerInfo(LobbyPlayer player) {
         try {
-            Statement statement = connection.createStatement();
-            ResultSet res = statement.executeQuery("SELECT * FROM `spigotlobby` WHERE uuid = '" + player.getPlayer().getUniqueId().toString() + "';");
-            if (res.next()) {
-                doReturn = true;
+            Statement statement = openConnection().createStatement();
+            if (statement.executeUpdate("UPDATE `spigotlobby` SET `chatEnabled` = '" + (player.hasChatEnabled() ? 1 : 0) + "', `playersEnabled` = '" + (player.hasPlayersEnabled() ? 1 : 0) + "', `petsEnabled` = '" + (player.hasPetsEnabled() ? 1 : 0) + "', `alertsEnabled` = '" + (player.hasAlertsEnabled() ? 1 : 0) + "' WHERE uuid = '" + player.getPlayer().getUniqueId().toString() + "';") != 1) {
+                SpigotLobby.getPlugin().getLogger().severe("Error updating the " + player.getPlayer().getName() + "'s information to the MySQL table!");
+                return false;
             }
-            res.close();
             statement.close();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
-        return doReturn;*/
+        return true;
     }
 
     private HashMap<String, Object> getPlayerInfo(LobbyPlayer player) {
