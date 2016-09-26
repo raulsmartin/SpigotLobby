@@ -2,10 +2,12 @@ package me.raulsmail.spigotlobby.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
@@ -27,7 +29,7 @@ public class ItemUtils {
         if (lore != null && !lore.isEmpty()) {
             itemMeta.setLore(lore);
         }
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
     }
@@ -56,7 +58,7 @@ public class ItemUtils {
         if (lore != null && !lore.isEmpty()) {
             itemMeta.setLore(lore);
         }
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
     }
@@ -88,21 +90,21 @@ public class ItemUtils {
         if (lore != null && !lore.isEmpty()) {
             itemMeta.setLore(lore);
         }
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
     }*/
 
-    public static ItemStack createHeadByByte64(String texture, String name) {
-        return createHeadByByte64(texture, 1, name, null);
+    public static ItemStack createHeadByByte64(Heads head, String name) {
+        return createHeadByByte64(head, 1, name, null);
     }
 
-    public static ItemStack createHeadByByte64(String texture, Integer amount, String name, List<String> lore) {
-        ItemStack item = heads.containsKey(texture) ? heads.get(texture) : new ItemStack(Material.SKULL_ITEM, amount, (short) 3);
+    public static ItemStack createHeadByByte64(Heads head, Integer amount, String name, List<String> lore) {
+        ItemStack item = heads.containsKey(head.getTexture()) ? heads.get(head.getTexture()) : new ItemStack(Material.SKULL_ITEM, amount, (short) 3);
         SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
-        if (!heads.containsKey(texture)) {
+        if (!heads.containsKey(head.getTexture())) {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-            profile.getProperties().put("textures", new Property("textures", texture));
+            profile.getProperties().put("textures", new Property("textures", head.getTexture()));
             try {
                 Field profileField = itemMeta.getClass().getDeclaredField("profile");
                 profileField.setAccessible(true);
@@ -112,14 +114,47 @@ public class ItemUtils {
                 e.printStackTrace();
             }
             item.setItemMeta(itemMeta);
-            heads.put(texture, item);
+            heads.put(head.getTexture(), item);
         }
         itemMeta.setDisplayName(name);
         if (lore != null && !lore.isEmpty()) {
             itemMeta.setLore(lore);
         }
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
+    }
+
+    public static ItemStack createClothes(Material material, Short durability, String displayName, Color color) {
+        return createClothes(material, 1, durability, displayName, null, color);
+    }
+
+    public static ItemStack createClothes(Material material, Integer amount, Short durability, String displayName, List<String> lore, Color color) {
+        ItemStack item = new ItemStack(material, amount, durability);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(displayName);
+        if (color != null) {
+            ((LeatherArmorMeta) itemMeta).setColor(color);
+        }
+        if (lore != null && !lore.isEmpty()) {
+            itemMeta.setLore(lore);
+        }
+        itemMeta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    public enum Heads {
+        QUESTION_MARK("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTE2M2RhZmFjMWQ5MWE4YzkxZGI1NzZjYWFjNzg0MzM2NzkxYTZlMThkOGY3ZjYyNzc4ZmM0N2JmMTQ2YjYifX19");
+
+        String texture;
+
+        Heads(String texture) {
+            this.texture = texture;
+        }
+
+        public String getTexture() {
+            return texture;
+        }
     }
 }

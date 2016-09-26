@@ -21,3 +21,5 @@ commands:
   fly:
     enable: "&aFlying has been enabled!"
     disable: "&cFlying has been disabled!"
+menus:
+  comingSoon: "&cComing Soon!"

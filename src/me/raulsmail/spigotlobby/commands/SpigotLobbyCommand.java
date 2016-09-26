@@ -41,6 +41,9 @@ public class SpigotLobbyCommand implements CommandExecutor {
                                         case "options":
                                             SpigotLobby.getPlugin().getCommonUtilities().getMenus().getOptionsMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player));
                                             return false;
+                                        case "wardrobe":
+                                            SpigotLobby.getPlugin().getCommonUtilities().getMenus().getWardrobeMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player));
+                                            return false;
                                     }
                                 }
                             }

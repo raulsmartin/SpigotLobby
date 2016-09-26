@@ -12,27 +12,31 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Created by raulsmail.
  */
-abstract class Menu implements Listener {
+public abstract class Menu implements Listener {
     private Integer slots;
     private String title;
 
-    Menu(Integer slots, String title) {
+    public Menu(Integer slots, String title) {
         this.slots = slots;
         this.title = title;
         SpigotLobby.getPlugin().getServer().getPluginManager().registerEvents(this, SpigotLobby.getPlugin());
     }
 
     public void openMainMenu(LobbyPlayer player) {
+        openMainMenu(player, 1);
+    }
+
+    public void openMainMenu(LobbyPlayer player, Integer page) {
         Inventory inventory = SpigotLobby.getPlugin().getServer().createInventory(null, slots, title);
-        putItems(player, inventory);
+        putItems(player, inventory, page);
         player.getPlayer().openInventory(inventory);
     }
 
-    public abstract void putItems(LobbyPlayer player, Inventory inventory);
+    public abstract void putItems(LobbyPlayer player, Inventory inventory, Integer page);
 
     public abstract void clickItemAction(InventoryClickEvent event, ItemStack itemStack, LobbyPlayer player);
 
-    void doDefaultClick(InventoryClickEvent event) {
+    protected void doDefaultClick(InventoryClickEvent event) {
         if (event.getWhoClicked() != null && event.getWhoClicked() instanceof Player && isInventory(event.getInventory())) {
             event.setCancelled(true);
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() != null && !event.getCurrentItem().getType().equals(Material.AIR)) {

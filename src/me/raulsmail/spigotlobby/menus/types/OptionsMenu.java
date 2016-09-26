@@ -1,6 +1,7 @@
-package me.raulsmail.spigotlobby.menus;
+package me.raulsmail.spigotlobby.menus.types;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
+import me.raulsmail.spigotlobby.menus.Menu;
 import me.raulsmail.spigotlobby.utils.ItemUtils;
 import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.Material;
@@ -14,12 +15,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class OptionsMenu extends Menu {
 
-    OptionsMenu() {
+    public OptionsMenu() {
         super(45, SpigotLobby.getPlugin().getConfig().getString("menus.optionsMenu.title").replaceAll("&", "§"));
     }
 
     @Override
-    public void putItems(LobbyPlayer player, Inventory inventory) {
+    public void putItems(LobbyPlayer player, Inventory inventory, Integer page) {
         inventory.setItem(10, ItemUtils.createItem(Material.BOOK_AND_QUILL, (player.hasChatEnabled() ? "§a" : "§c") + "Toggle Chat Visibility"));
         inventory.setItem(19, ItemUtils.createItem(Material.STAINED_CLAY, player.hasChatEnabled() ? (short) 5 : (short) 14, player.hasChatEnabled() ? "§aEnabled" : "§cDisabled"));
         inventory.setItem(12, ItemUtils.createItem(Material.EYE_OF_ENDER, (player.hasPlayersEnabled() ? "§a" : "§c") + "Toggle Player Visibility"));
@@ -28,7 +29,7 @@ public class OptionsMenu extends Menu {
         inventory.setItem(23, ItemUtils.createItem(Material.STAINED_CLAY, player.hasPetsEnabled() ? (short) 5 : (short) 14, player.hasPetsEnabled() ? "§aEnabled" : "§cDisabled"));
         inventory.setItem(16, ItemUtils.createItem(Material.JUKEBOX, (player.hasAlertsEnabled() ? "§a" : "§c") + "Toggle Chat Alerts"));
         inventory.setItem(25, ItemUtils.createItem(Material.STAINED_CLAY, player.hasAlertsEnabled() ? (short) 5 : (short) 14, player.hasAlertsEnabled() ? "§aEnabled" : "§cDisabled"));
-        inventory.setItem(40, ItemUtils.createItem(Material.ARROW, "§aBack"));
+        inventory.setItem(40, ItemUtils.createItem(SpigotLobby.getPlugin().getCommonUtilities().getOptionsMaterial(), "§cClose"));
     }
 
     @Override
@@ -50,15 +51,17 @@ public class OptionsMenu extends Menu {
                 player.setAlertsEnabled(!player.hasAlertsEnabled());
                 openMainMenu(player);
                 break;
-            case ARROW:
-                player.getPlayer().closeInventory();
-                break;
             case STAINED_CLAY:
                 if (event != null) {
                     ItemStack item = event.getInventory().getItem(event.getSlot() - 9);
                     if (item != null && item.getType() != null) {
                         clickItemAction(null, item, player);
                     }
+                }
+                break;
+            default:
+                if (itemStack.getType().equals(SpigotLobby.getPlugin().getCommonUtilities().getOptionsMaterial())) {
+                    player.getPlayer().closeInventory();
                 }
                 break;
         }
