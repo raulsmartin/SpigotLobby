@@ -2,6 +2,7 @@ package me.raulsmail.spigotlobby.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -63,8 +64,7 @@ public class ItemUtils {
         return item;
     }
 
-    //THIS NEEDS JAVA 1.8!!!
-    /*public static ItemStack createHeadByTextureURL(String texture, String name) {
+    public static ItemStack createHeadByTextureURL(String texture, String name) {
         return createHeadByTextureURL(texture, 1, name, null);
     }
 
@@ -73,7 +73,7 @@ public class ItemUtils {
         SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
         if (!heads.containsKey(texture)) {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-            byte[] encodedData = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", texture).getBytes());
+            byte[] encodedData = Base64.encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", texture).getBytes());
             profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
             try {
                 Field profileField = itemMeta.getClass().getDeclaredField("profile");
@@ -93,7 +93,7 @@ public class ItemUtils {
         itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
-    }*/
+    }
 
     public static ItemStack createHeadByByte64(Heads head, String name) {
         return createHeadByByte64(head, 1, name, null);

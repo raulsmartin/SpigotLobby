@@ -1,6 +1,7 @@
 package me.raulsmail.spigotlobby.utils;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
+import me.raulsmail.spigotlobby.cosmetics.gadgets.Gadget;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.Collections;
 public class LobbyPlayer {
     private Player player;
     private Boolean chatEnabled, playersEnabled, petsEnabled, alertsEnabled;
+    private Gadget currentGadget;
 
     public LobbyPlayer(Player player) {
         this.player = player;
@@ -69,6 +71,24 @@ public class LobbyPlayer {
 
     public void setAlertsEnabled(Boolean alertsEnabled) {
         this.alertsEnabled = alertsEnabled;
+    }
+
+    public Gadget getCurrentGadget() {
+        return currentGadget;
+    }
+
+    public void setCurrentGadget(Gadget currentGadget) {
+        this.currentGadget = currentGadget;
+    }
+
+    public Boolean hasActiveGadget() {
+        return currentGadget != null;
+    }
+
+    public void clearGadget() {
+        //TODO: Put things here.
+        currentGadget.clearGadget();
+        currentGadget = null;
     }
 
     public void alertPlayer() {

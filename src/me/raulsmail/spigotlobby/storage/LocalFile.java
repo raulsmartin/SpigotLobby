@@ -1,6 +1,7 @@
 package me.raulsmail.spigotlobby.storage;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
+import me.raulsmail.spigotlobby.cosmetics.gadgets.Gadgets;
 import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +23,9 @@ public class LocalFile implements Storage {
         File playerFileLoc = new File(location, player.getPlayer().getUniqueId().toString() + ".yml");
         FileConfiguration data = null;
         if (!location.exists()) {
-            location.mkdirs();
+            if (!location.mkdirs()) {
+                SpigotLobby.getPlugin().getLogger().warning(player.getPlayer().getName() + "'s file couldn't be created, please contact with the developer.");
+            }
         }
         if (!existsPlayerInfo(player)) {
             try {
@@ -32,6 +35,7 @@ public class LocalFile implements Storage {
                     data.set("playersEnabled", true);
                     data.set("petsEnabled", true);
                     data.set("alertsEnabled", true);
+                    data.set("currentGadget", 0);
                     data.save(playerFileLoc);
                 } else {
                     return false;
@@ -50,6 +54,7 @@ public class LocalFile implements Storage {
         player.setPlayersEnabled(data.getBoolean("playersEnabled"));
         player.setPetsEnabled(data.getBoolean("petsEnabled"));
         player.setAlertsEnabled(data.getBoolean("alertsEnabled"));
+        player.setCurrentGadget(Gadgets.getGadget(player, data.getInt("currentGadget")));
         configurations.put(player, data);
         return true;
     }
@@ -69,6 +74,7 @@ public class LocalFile implements Storage {
                     data.set("playersEnabled", player.hasPlayersEnabled());
                     data.set("petsEnabled", player.hasPetsEnabled());
                     data.set("alertsEnabled", player.hasAlertsEnabled());
+                    data.set("currentGadget", player.hasActiveGadget() ? player.getCurrentGadget().getType().ordinal() + 1 : 0);
                     data.save(new File(location, player.getPlayer().getUniqueId().toString() + ".yml"));
                     return true;
                 } catch (IOException e) {
