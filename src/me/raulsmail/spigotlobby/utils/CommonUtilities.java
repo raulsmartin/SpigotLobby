@@ -7,9 +7,6 @@ import me.raulsmail.spigotlobby.storage.MySQL;
 import me.raulsmail.spigotlobby.storage.Storage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
@@ -24,6 +21,7 @@ public class CommonUtilities extends CommonVariables {
         optionsMaterial = getMaterial("events.join.optionsItem.id");
         players = new HashMap<>();
         oldVersion = SpigotLobby.getPlugin().getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].contains("v1_8_R");
+        gadgetSlot = SpigotLobby.getPlugin().getConfig().getInt("gadgets.slot");
         if (SpigotLobby.getPlugin().getConfig().getBoolean("mysql.enabled")) {
             String hostname = SpigotLobby.getPlugin().getConfig().getString("mysql.hostname", "localhost");
             Integer port = SpigotLobby.getPlugin().getConfig().getInt("mysql.port", 3306);
@@ -66,6 +64,10 @@ public class CommonUtilities extends CommonVariables {
 
     public Boolean isOldVersion() {
         return oldVersion;
+    }
+
+    public Integer getGadgetSlot() {
+        return gadgetSlot;
     }
 
     public LobbyPlayer getLobbyPlayer(Player player) {
@@ -140,11 +142,6 @@ public class CommonUtilities extends CommonVariables {
     }
 
     private void givePlayerItemFormConfig(Player player, Material material, String itemConfig) {
-        ItemStack item = new ItemStack(material, 1, (short) SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".durability"));
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(SpigotLobby.getPlugin().getConfig().getString("events.join." + itemConfig + ".name").replaceAll("&", "§"));
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        item.setItemMeta(itemMeta);
-        player.getInventory().setItem(SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".slot"), item);
+        player.getInventory().setItem(SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".slot"), new ItemBuilder(material).setDurability((short) SpigotLobby.getPlugin().getConfig().getInt("events.join." + itemConfig + ".durability")).setDisplayName(SpigotLobby.getPlugin().getConfig().getString("events.join." + itemConfig + ".name").replaceAll("&", "§")).build());
     }
 }

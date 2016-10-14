@@ -4,6 +4,7 @@ import me.raulsmail.spigotlobby.SpigotLobby;
 import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -36,16 +37,6 @@ public abstract class Menu implements Listener {
 
     public abstract void clickItemAction(InventoryClickEvent event, ItemStack itemStack, LobbyPlayer player);
 
-    protected void doDefaultClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() != null && event.getWhoClicked() instanceof Player && isInventory(event.getInventory())) {
-            event.setCancelled(true);
-            if (event.getCurrentItem() != null && event.getCurrentItem().getType() != null && !event.getCurrentItem().getType().equals(Material.AIR)) {
-                LobbyPlayer player = SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer((Player) event.getWhoClicked());
-                clickItemAction(event, event.getCurrentItem(), player);
-            }
-        }
-    }
-
     private Boolean isInventory(Inventory inventory) {
         if (inventory != null && inventory.getTitle() != null) {
             if (inventory.getTitle().equals(title)) {
@@ -53,5 +44,16 @@ public abstract class Menu implements Listener {
             }
         }
         return false;
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() != null && event.getWhoClicked() instanceof Player && isInventory(event.getInventory())) {
+            event.setCancelled(true);
+            if (event.getCurrentItem() != null && event.getCurrentItem().getType() != null && !event.getCurrentItem().getType().equals(Material.AIR)) {
+                LobbyPlayer player = SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer((Player) event.getWhoClicked());
+                clickItemAction(event, event.getCurrentItem(), player);
+            }
+        }
     }
 }

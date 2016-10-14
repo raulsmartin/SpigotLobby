@@ -4,10 +4,9 @@ import me.raulsmail.spigotlobby.SpigotLobby;
 import me.raulsmail.spigotlobby.cosmetics.wardrobe.Clothes;
 import me.raulsmail.spigotlobby.menus.Menu;
 import me.raulsmail.spigotlobby.utils.GeneralUtils;
-import me.raulsmail.spigotlobby.utils.ItemUtils;
+import me.raulsmail.spigotlobby.utils.ItemBuilder;
 import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -45,21 +44,21 @@ public class WardrobeMenu extends Menu {
             if (i < clothesAmount) {
                 lastPageItem = i + 1;
                 Clothes clothes = Clothes.values()[i];
-                inventory.setItem(slot, ItemUtils.createClothes(clothes.getMaterial(), clothes.getDurability(), clothes.getDisplayName(), clothes.getColor()));
+                inventory.setItem(slot, new ItemBuilder(clothes.getMaterial()).setDurability(clothes.getDurability()).setDisplayName(clothes.getDisplayName()).setColor(clothes.getColor()).build());//ItemUtils.createClothes(clothes.getMaterial(), clothes.getDurability(), clothes.getDisplayName(), clothes.getColor()));
                 slot = getNextSlot(slot);
             }
         }
 
         if (page.equals(1)) {
-            inventory.setItem(44, ItemUtils.createItem(Material.ARROW, "§aPage 2"));
+            inventory.setItem(44, new ItemBuilder(Material.ARROW).setDisplayName("§aPage 2").build());//ItemUtils.createItem(Material.ARROW, "§aPage 2"));
         } else if (lastPageItem.equals(clothesAmount)) {
-            inventory.setItem(36, ItemUtils.createItem(Material.ARROW, "§aPage " + (page - 1)));
+            inventory.setItem(36, new ItemBuilder(Material.ARROW).setDisplayName("§aPage " + (page - 1)).build());//ItemUtils.createItem(Material.ARROW, "§aPage " + (page - 1)));
         } else {
-            inventory.setItem(36, ItemUtils.createItem(Material.ARROW, "§aPage " + (page - 1)));
-            inventory.setItem(44, ItemUtils.createItem(Material.ARROW, "§aPage " + (page + 1)));
+            inventory.setItem(36, new ItemBuilder(Material.ARROW).setDisplayName("§aPage " + (page - 1)).build());//ItemUtils.createItem(Material.ARROW, "§aPage " + (page - 1)));
+            inventory.setItem(44, new ItemBuilder(Material.ARROW).setDisplayName("§aPage " + (page + 1)).build());//ItemUtils.createItem(Material.ARROW, "§aPage " + (page + 1)));
         }
 
-        inventory.setItem(40, ItemUtils.createItem(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial(), "§cBack"));
+        inventory.setItem(40, new ItemBuilder(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial()).setDisplayName("§cBack").build());//ItemUtils.createItem(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial(), "§cBack"));
     }
 
     @Override
@@ -78,11 +77,6 @@ public class WardrobeMenu extends Menu {
                 }
                 break;
         }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        doDefaultClick(event);
     }
 
     private Integer getNextSlot(Integer previous) {

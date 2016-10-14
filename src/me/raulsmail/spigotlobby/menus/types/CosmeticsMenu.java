@@ -2,10 +2,10 @@ package me.raulsmail.spigotlobby.menus.types;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
 import me.raulsmail.spigotlobby.menus.Menu;
-import me.raulsmail.spigotlobby.utils.ItemUtils;
+import me.raulsmail.spigotlobby.utils.Heads;
+import me.raulsmail.spigotlobby.utils.ItemBuilder;
 import me.raulsmail.spigotlobby.utils.LobbyPlayer;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,14 +21,14 @@ public class CosmeticsMenu extends Menu {
 
     @Override
     public void putItems(LobbyPlayer player, Inventory inventory, Integer page) {
-        inventory.setItem(10, ItemUtils.createItem(Material.GOLD_CHESTPLATE, "§aWardrobe"));
-        inventory.setItem(12, ItemUtils.createItem(Material.DIAMOND_HELMET, "§aHats"));
-        inventory.setItem(14, ItemUtils.createItem(Material.BONE, "§aPets"));
-        inventory.setItem(16, ItemUtils.createItem(Material.PISTON_BASE, "§aGadgets"));
-        inventory.setItem(20, ItemUtils.createItem(Material.SADDLE, "§aMounts"));
-        inventory.setItem(22, ItemUtils.createItem(Material.RED_ROSE, (short) 4, "§aTrails"));
-        inventory.setItem(24, ItemUtils.createHeadByByte64(ItemUtils.Heads.QUESTION_MARK, "§cComing Soon"));
-        inventory.setItem(40, ItemUtils.createItem(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial(), "§cClose"));
+        inventory.setItem(10, new ItemBuilder(Material.GOLD_CHESTPLATE).setDisplayName("§aWardrobe").build());//ItemUtils.createItem(Material.GOLD_CHESTPLATE, "§aWardrobe"));
+        inventory.setItem(12, new ItemBuilder(Material.DIAMOND_HELMET).setDisplayName("§aHats").build());//ItemUtils.createItem(Material.DIAMOND_HELMET, "§aHats"));
+        inventory.setItem(14, new ItemBuilder(Material.BONE).setDisplayName("§aPets").build());//ItemUtils.createItem(Material.BONE, "§aPets"));
+        inventory.setItem(16, new ItemBuilder(Material.PISTON_BASE).setDisplayName("§aGadgets").build());//ItemUtils.createItem(Material.PISTON_BASE, "§aGadgets"));
+        inventory.setItem(20, new ItemBuilder(Material.SADDLE).setDisplayName("§aMounts").build());//ItemUtils.createItem(Material.SADDLE, "§aMounts"));
+        inventory.setItem(22, new ItemBuilder(Material.RED_ROSE).setDurability((short) 4).setDisplayName("§aTrails").build());//ItemUtils.createItem(Material.RED_ROSE, (short) 4, "§aTrails"));
+        inventory.setItem(24, new ItemBuilder(Material.SKULL_ITEM).setDurability((short) 3).setDisplayName("§cComing Soon").setSkullTextureBase64(Heads.QUESTION_MARK.getTexture()).build());//ItemUtils.createHeadByByte64(ItemUtils.Heads.QUESTION_MARK, "§cComing Soon"));
+        inventory.setItem(40, new ItemBuilder(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial()).setDisplayName("§cClose").build());//ItemUtils.createItem(SpigotLobby.getPlugin().getCommonUtilities().getCosmeticsMaterial(), "§cClose"));
     }
 
     @Override
@@ -61,10 +61,5 @@ public class CosmeticsMenu extends Menu {
                 }
                 break;
         }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        doDefaultClick(event);
     }
 }

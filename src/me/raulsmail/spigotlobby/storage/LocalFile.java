@@ -35,7 +35,7 @@ public class LocalFile implements Storage {
                     data.set("playersEnabled", true);
                     data.set("petsEnabled", true);
                     data.set("alertsEnabled", true);
-                    data.set("currentGadget", 0);
+                    data.set("equippedGadget", 0);
                     data.save(playerFileLoc);
                 } else {
                     return false;
@@ -54,7 +54,7 @@ public class LocalFile implements Storage {
         player.setPlayersEnabled(data.getBoolean("playersEnabled"));
         player.setPetsEnabled(data.getBoolean("petsEnabled"));
         player.setAlertsEnabled(data.getBoolean("alertsEnabled"));
-        player.setCurrentGadget(Gadgets.getGadget(player, data.getInt("currentGadget")));
+        Gadgets.getGadget(player, data.getInt("equippedGadget"));
         configurations.put(player, data);
         return true;
     }
@@ -74,7 +74,7 @@ public class LocalFile implements Storage {
                     data.set("playersEnabled", player.hasPlayersEnabled());
                     data.set("petsEnabled", player.hasPetsEnabled());
                     data.set("alertsEnabled", player.hasAlertsEnabled());
-                    data.set("currentGadget", player.hasActiveGadget() ? player.getCurrentGadget().getType().ordinal() + 1 : 0);
+                    data.set("equippedGadget", player.hasEquippedGadget() ? player.getEquippedGadget().getType().ordinal() + 1 : 0);
                     data.save(new File(location, player.getPlayer().getUniqueId().toString() + ".yml"));
                     return true;
                 } catch (IOException e) {

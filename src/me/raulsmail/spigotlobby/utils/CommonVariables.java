@@ -16,5 +16,5 @@ class CommonVariables {
     Map<Player, LobbyPlayer> players;
     Menus menus;
     Boolean oldVersion;
-
+    Integer gadgetSlot;
 }

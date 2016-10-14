@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +19,7 @@ import java.util.UUID;
 /**
  * Created by raulsmail.
  */
+@Deprecated
 public class ItemUtils {
     private static Map<String, ItemStack> heads = new HashMap<>();
 
@@ -37,6 +37,10 @@ public class ItemUtils {
 
     public static ItemStack createItem(Material material, String name) {
         return createItem(material, 1, (short) 0, name, null);
+    }
+
+    public static ItemStack createItem(Material material, Short durability, String name, List<String> lore) {
+        return createItem(material, 1, durability, name, lore);
     }
 
     public static ItemStack createItem(Material material, Short durability, String name) {
@@ -75,14 +79,7 @@ public class ItemUtils {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
             byte[] encodedData = Base64.encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", texture).getBytes());
             profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
-            try {
-                Field profileField = itemMeta.getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                profileField.set(itemMeta, profile);
-                profileField.setAccessible(!profileField.isAccessible());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            GeneralUtils.setSkullProfile(itemMeta, profile);
             item.setItemMeta(itemMeta);
             heads.put(texture, item);
         }
@@ -105,14 +102,7 @@ public class ItemUtils {
         if (!heads.containsKey(head.getTexture())) {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
             profile.getProperties().put("textures", new Property("textures", head.getTexture()));
-            try {
-                Field profileField = itemMeta.getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                profileField.set(itemMeta, profile);
-                profileField.setAccessible(!profileField.isAccessible());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            GeneralUtils.setSkullProfile(itemMeta, profile);
             item.setItemMeta(itemMeta);
             heads.put(head.getTexture(), item);
         }
@@ -142,19 +132,5 @@ public class ItemUtils {
         itemMeta.addItemFlags(ItemFlag.values());
         item.setItemMeta(itemMeta);
         return item;
-    }
-
-    public enum Heads {
-        QUESTION_MARK("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTE2M2RhZmFjMWQ5MWE4YzkxZGI1NzZjYWFjNzg0MzM2NzkxYTZlMThkOGY3ZjYyNzc4ZmM0N2JmMTQ2YjYifX19");
-
-        String texture;
-
-        Heads(String texture) {
-            this.texture = texture;
-        }
-
-        public String getTexture() {
-            return texture;
-        }
     }
 }

@@ -3,12 +3,16 @@ package me.raulsmail.spigotlobby.utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.sun.xml.internal.messaging.saaj.util.Base64;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,6 +42,23 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setLore(List<String> lore) {
+        if (lore == null) {
+            lore = Collections.emptyList();
+        }
+        itemMeta.setLore(lore);
+        return this;
+    }
+
+    public ItemBuilder setColor(Color color) {
+        if (color != null) {
+            if (itemMeta instanceof LeatherArmorMeta) {
+                ((LeatherArmorMeta) itemMeta).setColor(color);
+            }
+        }
+        return this;
+    }
+
     public ItemBuilder setSkullOwner(String skullOwner) {
         if (itemMeta instanceof SkullMeta) {
             ((SkullMeta) itemMeta).setOwner(skullOwner);
@@ -48,16 +69,8 @@ public class ItemBuilder {
     public ItemBuilder setSkullTextureUrl(String textureUrl) {
         if (itemMeta instanceof SkullMeta) {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-            byte[] encodedData = Base64.encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", textureUrl).getBytes());
-            profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
-            try {
-                Field profileField = itemMeta.getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                profileField.set(itemMeta, profile);
-                profileField.setAccessible(!profileField.isAccessible());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            profile.getProperties().put("textures", new Property("textures", new String(Base64.encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", textureUrl).getBytes()))));
+            GeneralUtils.setSkullProfile(itemMeta, profile);
         }
         return this;
     }
@@ -66,15 +79,14 @@ public class ItemBuilder {
         if (itemMeta instanceof SkullMeta) {
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
             profile.getProperties().put("textures", new Property("textures", textureBase64));
-            try {
-                Field profileField = ((SkullMeta) itemMeta).getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                profileField.set(itemMeta, profile);
-                profileField.setAccessible(!profileField.isAccessible());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            GeneralUtils.setSkullProfile(itemMeta, profile);
         }
         return this;
+    }
+
+    public ItemStack build() {
+        itemMeta.addItemFlags(ItemFlag.values());
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

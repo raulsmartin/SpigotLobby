@@ -48,6 +48,8 @@ menus:
     title: '&9Options'
   wardrobeMenu:
     title: '&2Wardrobe'
+gadgets:
+  slot: 5
 mysql:
   enabled: false
   hostname: 'localhost'

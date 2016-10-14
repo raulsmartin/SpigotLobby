@@ -1,6 +1,7 @@
 package me.raulsmail.spigotlobby.commands;
 
 import me.raulsmail.spigotlobby.SpigotLobby;
+import me.raulsmail.spigotlobby.cosmetics.gadgets.Gadgets;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,6 +44,9 @@ public class SpigotLobbyCommand implements CommandExecutor {
                                             return false;
                                         case "wardrobe":
                                             SpigotLobby.getPlugin().getCommonUtilities().getMenus().getWardrobeMenu().openMainMenu(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player));
+                                            return false;
+                                        case "gadget":
+                                            Gadgets.getGadget(SpigotLobby.getPlugin().getCommonUtilities().getLobbyPlayer(player), 1).equip();
                                             return false;
                                     }
                                 }
