@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -66,6 +68,23 @@ public abstract class Gadget implements Listener {
 
     public Boolean isEquiped() {
         return equiped;
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getPlayer().getUniqueId().equals(player.getPlayer().getUniqueId())) {
+            if (event.getItem() != null) {
+                if (event.getItem().getType() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
+                    if (event.getItem().getType().equals(type.getMaterial()) && event.getItem().getItemMeta().getDisplayName().equals(type.getName())) {
+                        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                            onRightClick();
+                        } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+                            onLeftClick();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @EventHandler
